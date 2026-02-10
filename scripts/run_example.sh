@@ -1,0 +1,1 @@
+# Skript für automatische Ausführung (Prüfung)

@@ -1,0 +1,14 @@
+# Beispielhausen
+Zeitraum:
+50 1
+
+Einfallspunkte:
+A 0 0 B 2
+C 0 2 B 5
+D 4 0 E 3
+F 4 2 E 2
+G 5 1 E 3
+
+Kreuzungen:
+B 0 1 A 20 C 30 E 50
+E 4 1 D 20 F 20 G 10 B 50
