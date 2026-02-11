@@ -3,6 +3,7 @@ from dataclasses import field, dataclass
 
 from src.traffic.io.printer import OutputPrinter
 from src.traffic.models import EntryPoint, Intersection, Edge, Vehicle, Node, Point
+from src.traffic.util.validator import Validator
 
 
 @dataclass
@@ -49,6 +50,8 @@ class Simulation:
         )
 
     def run(self):
+        v = Validator(self)
+        v.run_validations()
         op = OutputPrinter("out")
         op.print_plan(self.roads)
         while self.time <= self.end_time:
