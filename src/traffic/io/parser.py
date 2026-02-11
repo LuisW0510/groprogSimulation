@@ -2,7 +2,7 @@ from enum import IntEnum
 from pathlib import Path
 
 from src.traffic.models import EntryPoint, Point, Intersection
-from src.traffic.sim.simulation import Simulation
+from src.traffic.simulation import Simulation
 
 class Modes(IntEnum):
     NONE = 0

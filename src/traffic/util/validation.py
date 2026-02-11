@@ -1,1 +1,0 @@
-# Eingabeprüfungen, Fehlertexte
