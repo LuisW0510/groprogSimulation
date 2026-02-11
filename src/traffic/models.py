@@ -23,7 +23,7 @@ class Edge:
     name: str
     start_point: Node
     end_point: Node
-    length: float               # In Koordinaten-Einheiten (1.0 = 100m)
+    length: float                  # In Koordinaten-Einheiten (1.0 = 100m)
 
     #Statistik-Vars
     current_vehicle_sum: int = 0
@@ -41,8 +41,7 @@ class Vehicle:
     def move(self, sim: Simulation):
         # Umrechnung von km/h in Meter pro Sekunde (v / 3.6)
         # Wenn ein Takt 1 Sekunde ist:
-        meters_this_step = self.speed / 360
-        remaining_distance = meters_this_step
+        remaining_distance = self.speed / 360
         while remaining_distance > 0:
             target_pos = self.current_road.end_point.position
             # Distanz zum Ende der Straße
@@ -56,8 +55,8 @@ class Vehicle:
 
                 # Nächste Straße über die Intersection bestimmen
                 current_node = self.target_node
-                if hasattr(current_node, 'choose_next_node_name'):
-                    next_road = self.get_next_road(sim)
+                if hasattr(current_node, 'choose_next_road'):
+                    next_road = current_node.choose_next_road(self.current_road.start_point.name, sim)
                     if next_road:
                         self.current_road = next_road
                         self.target_node = self.current_road.end_point
@@ -74,13 +73,6 @@ class Vehicle:
 
                 remaining_distance = 0 # Strecke für diesen Takt komplett verfahren
 
-
-    def get_next_road(self, sim: Simulation) -> Edge:
-        new_target_node_name = self.target_node.choose_next_node_name(self.current_road.start_point.name)
-        for road in sim.roads:
-            if road.start_point is self.target_node and road.end_point.name == new_target_node_name:
-                return road
-        return None
 
 
 @dataclass
@@ -109,15 +101,13 @@ class EntryPoint(Node):
 class Intersection(Node):
     connections: dict[str, int]
 
-    def choose_next_node_name(self, last_node_name: str) -> str:
+    def choose_next_road(self, last_node_name: str, sim: Simulation) -> Edge:
         # 1. Filtere die Verbindung aus, von der wir gerade kommen
         filtered_connections = {
             node: weight
             for node, weight in self.connections.items()
             if node != last_node_name
         }
-        if not filtered_connections:
-            raise ValueError(f"Keine Ausweichmöglichkeiten von {self.name} außer zurück nach {last_node_name}.")
 
         # 2. Extrahiere Namen und Gewichte für die Auswahl
         destinations = list(filtered_connections.keys())
@@ -125,6 +115,8 @@ class Intersection(Node):
 
         # 3. Zufällige Wahl basierend auf den relativen Gewichten
         # random.choices berechnet die Wahrscheinlichkeiten intern (weight / sum(weights))
-        next_node_name = random.choices(destinations, weights=weights, k=1)[0]
-
-        return next_node_name
+        new_target_node_name = random.choices(destinations, weights=weights, k=1)[0]
+        for road in sim.roads:
+            if road.start_point is self and road.end_point.name == new_target_node_name:
+                return road
+        return None

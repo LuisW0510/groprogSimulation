@@ -17,6 +17,19 @@ class InputParser:
         input_path = project_root / "examples" / example_path
         self.input_path = input_path
 
+    @staticmethod
+    def _validate_data(entry_points: list[EntryPoint], intersections: list[Intersection]):
+        # Alle existierenden Kreuzungsnamen in ein Set für schnellen Zugriff
+        existing_intersection_names = {it.name for it in intersections}
+
+        # 1. Validiere Einfallspunkte -> Zielkreuzung
+        for ep in entry_points:
+            if ep.target_intersection not in existing_intersection_names:
+                raise ValueError(
+                    f"Validierungsfehler in Einfallspunkt '{ep.name}': "
+                    f"Die Zielkreuzung '{ep.target_intersection}' existiert nicht im Abschnitt 'Kreuzungen:'."
+                )
+
     def load_input(self) -> Simulation:
         with open(self.input_path) as f:
             lines = f.readlines()
@@ -64,5 +77,12 @@ class InputParser:
                             pos = Point(float(parts[1]), float(parts[2]))
                             it = Intersection(name=parts[0], position=pos, connections=conn)
                             intersections.append(it)
+
+        try:
+            self._validate_data(entry_points, intersections)
+        except ValueError as e:
+            # Beendet das Programm mit einer klaren Fehlermeldung statt eines Absturzes
+            print(f"FEHLER BEIM EINLESEN: {e}")
+            exit(1)
 
         return Simulation(end_time=end_time, dt=dt, entry_points=entry_points, intersections=intersections)
