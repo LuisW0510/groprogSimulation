@@ -1,0 +1,9 @@
+- Umbenennung der Klasse Point in Node und Road in Edge
+	-> mehr als Graph angesehen
+- Auslagerung von position (float, float) zu Point-Klasse mit x,y
+- length Attribut aus bequemlichkeitsgründen zu Edge(Road) hinzugefügt
+- roads Attribut zu sim hinzugefügt
+- next_spawn_time entfernt -> einfach % Takt prüfen
+- bei new Intersection -> connections:str weil Node noch nicht sicher existiert
+- im Algo: erst moven dann spawnen
+- intersection choose_next_node -> übergabe nur last_road nicht ganzes auto -> elementarer
