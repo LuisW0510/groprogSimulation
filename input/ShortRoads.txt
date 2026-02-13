@@ -1,0 +1,13 @@
+# ShortRoads - sehr kurze Kanten um mehrfaches weiterfahren pro Tick zu testen
+Zeitraum:
+30 1
+
+Einfallspunkte:
+A 0.00 0.00 I1 2
+B 0.00 0.10 I1 3
+X 1.00 0.00 I3 9999
+
+Kreuzungen:
+I1 0.05 0.00 A 1 I2 2 B 1
+I2 0.10 0.00 I1 1 I3 2
+I3 0.15 0.00 I2 1 X 3
