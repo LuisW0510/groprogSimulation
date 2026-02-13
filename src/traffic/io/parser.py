@@ -14,7 +14,7 @@ class InputParser:
     def __init__(self, example_path):
         current_file = Path(__file__).resolve()
         project_root = current_file.parents[3]
-        input_path = project_root / "examples" / example_path
+        input_path = project_root / "input" / example_path
         self.input_path = input_path
 
     def load_input(self) -> Simulation:
